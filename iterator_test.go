@@ -75,7 +75,7 @@ func BenchmarkIntsClosureIterator(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		var sum, val int = 0, 0
-		for it, valid := IntClosureIterator(); valid; val, valid = it() {
+		for it, has_next := IntClosureIterator(); has_next; val, has_next = it() {
 			sum += val
 		}
 	}
@@ -86,7 +86,7 @@ func BenchmarkDataClosureIterator(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		var sum, val int = 0, 0
-		for it, valid := DataClosureIterator(); valid; val, valid = it() {
+		for it, has_next := DataClosureIterator(); has_next; val, has_next = it() {
 			sum += val
 		}
 	}

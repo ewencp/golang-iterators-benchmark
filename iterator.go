@@ -89,7 +89,7 @@ func DataBufferedChannelIterator() <-chan int {
 	return ch
 }
 
-// Closures: Return (next(), valid), where next() returns (val, valid)
+// Closures: Return (next(), has_next), where next() returns (val, has_next)
 func IntClosureIterator() (func() (int, bool), bool) {
 	var idx int = 0
 	var data_len = len(int_data)
