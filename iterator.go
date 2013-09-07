@@ -66,8 +66,10 @@ func DataChannelIterator() <-chan int {
 }
 
 // Buffered Channels:
+const ChannelBuffer int = 50
+
 func IntBufferedChannelIterator() <-chan int {
-	ch := make(chan int, 10)
+	ch := make(chan int, ChannelBuffer)
 	go func() {
 		for _, val := range int_data {
 			ch <- val
@@ -77,7 +79,7 @@ func IntBufferedChannelIterator() <-chan int {
 	return ch
 }
 func DataBufferedChannelIterator() <-chan int {
-	ch := make(chan int, 10)
+	ch := make(chan int, ChannelBuffer)
 	go func() {
 		for _, val := range struct_data {
 			ch <- val.foo
