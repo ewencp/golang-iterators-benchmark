@@ -76,9 +76,6 @@ func BenchmarkIntsClosureIterator(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		var sum, val int = 0, 0
 		for it, valid := IntClosureIterator(); valid; val, valid = it() {
-			if !valid {
-				break
-			}
 			sum += val
 		}
 	}
@@ -90,9 +87,6 @@ func BenchmarkDataClosureIterator(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		var sum, val int = 0, 0
 		for it, valid := DataClosureIterator(); valid; val, valid = it() {
-			if !valid {
-				break
-			}
 			sum += val
 		}
 	}

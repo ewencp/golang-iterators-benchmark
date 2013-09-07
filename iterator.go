@@ -94,11 +94,8 @@ func IntClosureIterator() (func() (int, bool), bool) {
 	return func() (int, bool) {
 		prev_idx := idx
 		idx++
-		if prev_idx < data_len {
-			return int_data[prev_idx], true
-		}
-		return 0, false
-	}, true
+		return int_data[prev_idx], (idx < data_len)
+	}, (idx < data_len)
 }
 
 func DataClosureIterator() (func() (int, bool), bool) {
@@ -107,9 +104,6 @@ func DataClosureIterator() (func() (int, bool), bool) {
 	return func() (int, bool) {
 		prev_idx := idx
 		idx++
-		if prev_idx < data_len {
-			return struct_data[prev_idx].foo, true
-		}
-		return 0, false
-	}, true
+		return struct_data[prev_idx].foo, (idx < data_len)
+	}, (idx < data_len)
 }
