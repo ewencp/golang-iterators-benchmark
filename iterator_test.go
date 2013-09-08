@@ -91,3 +91,51 @@ func BenchmarkDataClosureIterator(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkIntStatefulIterator(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var sum int = 0
+		it := NewIntStatefulIterator(int_data)
+		for it.Next() {
+			sum += it.Value()
+		}
+	}
+}
+
+func BenchmarkDataStatefulIterator(b *testing.B) {
+	InitData()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var sum int = 0
+		it := NewDataStatefulIterator(struct_data)
+		for it.Next() {
+			sum += it.Value()
+		}
+	}
+}
+
+func BenchmarkIntStatefulIteratorInterface(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var sum int = 0
+		it := NewIntStatefulIteratorInterface(int_data)
+		for it.Next() {
+			sum += it.Value()
+		}
+	}
+}
+
+func BenchmarkDataStatefulIteratorInterface(b *testing.B) {
+	InitData()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var sum int = 0
+		it := NewDataStatefulIteratorInterface(struct_data)
+		for it.Next() {
+			sum += it.Value()
+		}
+	}
+}
