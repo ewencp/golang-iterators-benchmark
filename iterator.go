@@ -38,8 +38,8 @@ func IntCallbackIterator(cb func(int)) {
 	}
 }
 func DataCallbackIterator(cb func(int)) {
-	for _, val := range int_data {
-		cb(val)
+	for _, val := range struct_data {
+		cb(val.foo)
 	}
 }
 
@@ -108,4 +108,58 @@ func DataClosureIterator() (func() (int, bool), bool) {
 		idx++
 		return struct_data[prev_idx].foo, (idx < data_len)
 	}, (idx < data_len)
+}
+
+type StatefulIterator interface {
+	Value() int
+	Next() bool
+}
+
+type dataStatefulIterator struct {
+	current int
+	data    []*Data
+}
+
+func NewDataStatefulIterator(data []*Data) *dataStatefulIterator {
+	return &dataStatefulIterator{data: data, current: -1}
+}
+
+func NewDataStatefulIteratorInterface(data []*Data) StatefulIterator {
+	return &dataStatefulIterator{data: data, current: -1}
+}
+
+func (it *dataStatefulIterator) Value() int {
+	return it.data[it.current].foo
+}
+func (it *dataStatefulIterator) Next() bool {
+	it.current++
+	if it.current >= len(it.data) {
+		return false
+	}
+	return true
+}
+
+type intStatefulIterator struct {
+	current int
+	data    []int
+}
+
+func (it *intStatefulIterator) Value() int {
+	return it.data[it.current]
+}
+func (it *intStatefulIterator) Next() bool {
+	it.current++
+
+	if it.current >= len(it.data) {
+		return false
+	}
+	return true
+}
+
+func NewIntStatefulIterator(data []int) *intStatefulIterator {
+	return &intStatefulIterator{data: data, current: -1}
+}
+
+func NewIntStatefulIteratorInterface(data []int) StatefulIterator {
+	return &intStatefulIterator{data: data, current: -1}
 }
