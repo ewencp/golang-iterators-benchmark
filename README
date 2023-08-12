@@ -1,1 +1,28 @@
 A simple evaluation of iterators in Go.
+
+
+Run like this:
+
+go test -bench .
+
+
+Example output:
+
+goos: linux
+goarch: amd64
+pkg: github.com/ewencp/golang-iterators-benchmark
+cpu: Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz
+BenchmarkIntsCallbackIterator-4                      781           1529502 ns/op
+BenchmarkDataCallbackIterator-4                      678           1689796 ns/op
+BenchmarkIntsChannelIterator-4                         7         174408324 ns/op
+BenchmarkDataChannelIterator-4                         6         169017611 ns/op
+BenchmarkIntsBufferedChannelIterator-4                22          54457515 ns/op
+BenchmarkDataBufferedChannelIterator-4                22          53085977 ns/op
+BenchmarkIntsClosureIterator-4                       582           2057531 ns/op
+BenchmarkDataClosureIterator-4                       483           2466948 ns/op
+BenchmarkIntStatefulIterator-4                       870           1351186 ns/op
+BenchmarkDataStatefulIterator-4                      674           1814788 ns/op
+BenchmarkIntStatefulIteratorInterface-4              468           2518338 ns/op
+BenchmarkDataStatefulIteratorInterface-4             342           3512174 ns/op
+PASS
+ok      github.com/ewencp/golang-iterators-benchmark    17.764s
