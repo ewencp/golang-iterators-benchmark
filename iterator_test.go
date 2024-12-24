@@ -26,6 +26,108 @@ func BenchmarkDataCallbackIterator(b *testing.B) {
 	}
 }
 
+func BenchmarkIntsBuiltinPushIterator(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var sum int = 0
+		for val := range IntBuiltinPushIterator() {
+			sum += val
+		}
+	}
+}
+
+func BenchmarkDataBuiltinPushIterator(b *testing.B) {
+	InitData()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var sum int = 0
+		for val := range DataBuiltinPushIterator() {
+			sum += val
+		}
+	}
+}
+
+func BenchmarkIntsBuiltinPullIterator(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	do_iteration := func() {
+		var sum int = 0
+		next, stop := IntBuiltinPullIterator()
+		defer stop()
+		for {
+			val, ok := next()
+			if !ok {
+				break
+			}
+			sum += val
+		}
+	}
+	for i := 0; i < b.N; i++ {
+		do_iteration()
+	}
+}
+
+func BenchmarkDataBuiltinPullIterator(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	do_iteration := func() {
+		var sum int = 0
+		next, stop := DataBuiltinPullIterator()
+		defer stop()
+		for {
+			val, ok := next()
+			if !ok {
+				break
+			}
+			sum += val
+		}
+	}
+	for i := 0; i < b.N; i++ {
+		do_iteration()
+	}
+}
+
+func BenchmarkIntsBuiltinPullManualIterator(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	do_iteration := func() {
+		var sum int = 0
+		next, stop := IntBuiltinPullManualIterator()
+		defer stop()
+		for {
+			val, ok := next()
+			if !ok {
+				break
+			}
+			sum += val
+		}
+	}
+	for i := 0; i < b.N; i++ {
+		do_iteration()
+	}
+}
+
+func BenchmarkDataBuiltinPullManualIterator(b *testing.B) {
+	InitInts()
+	b.ResetTimer()
+	do_iteration := func() {
+		var sum int = 0
+		next, stop := DataBuiltinPullManualIterator()
+		defer stop()
+		for {
+			val, ok := next()
+			if !ok {
+				break
+			}
+			sum += val
+		}
+	}
+	for i := 0; i < b.N; i++ {
+		do_iteration()
+	}
+}
+
 func BenchmarkIntsChannelIterator(b *testing.B) {
 	InitInts()
 	b.ResetTimer()

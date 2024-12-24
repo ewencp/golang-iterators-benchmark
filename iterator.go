@@ -1,6 +1,9 @@
 package main
 
-import "math/rand"
+import (
+	"iter"
+	"math/rand"
+)
 
 const NumItems int = 1000000
 
@@ -41,6 +44,68 @@ func DataCallbackIterator(cb func(int)) {
 	for _, val := range struct_data {
 		cb(val.foo)
 	}
+}
+
+// Builtin "generic" push iterator (Golang 1.23+):
+func IntBuiltinPushIterator() iter.Seq[int] {
+	return func(yield func(int) bool) {
+		for _, val := range int_data {
+			if !yield(val) {
+				break
+			}
+		}
+	}
+}
+func DataBuiltinPushIterator() iter.Seq[int] {
+	return func(yield func(int) bool) {
+		for _, val := range struct_data {
+			if !yield(val.foo) {
+				break
+			}
+		}
+	}
+}
+
+// Builtin "generic" pull iterator (Golang 1.23+):
+func IntBuiltinPullIterator() (next func() (int, bool), stop func()) {
+	return iter.Pull(IntBuiltinPushIterator())
+}
+func DataBuiltinPullIterator() (next func() (int, bool), stop func()) {
+	return iter.Pull(DataBuiltinPushIterator())
+}
+
+// Builtin "generic" pull iterator, implemented manually to avoid channels in generic iter.Pull implementation (Golang 1.23+):
+func IntBuiltinPullManualIterator() (next func() (int, bool), stop func()) {
+	var idx = 0
+	var data_len = len(int_data)
+	next = func() (int, bool) {
+		if idx >= data_len {
+			return 0, false
+		}
+		prev_idx := idx
+		idx++
+		return int_data[prev_idx], true
+	}
+	stop = func() {
+		idx = data_len
+	}
+	return
+}
+func DataBuiltinPullManualIterator() (next func() (int, bool), stop func()) {
+	var idx = 0
+	var data_len = len(struct_data)
+	next = func() (int, bool) {
+		if idx >= data_len {
+			return 0, false
+		}
+		prev_idx := idx
+		idx++
+		return struct_data[prev_idx].foo, true
+	}
+	stop = func() {
+		idx = data_len
+	}
+	return
 }
 
 // Channels:

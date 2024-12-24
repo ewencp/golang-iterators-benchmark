@@ -8,21 +8,60 @@ go test -bench .
 
 Example output:
 
-goos: linux
-goarch: amd64
+goos: darwin
+goarch: arm64
 pkg: github.com/ewencp/golang-iterators-benchmark
-cpu: Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz
-BenchmarkIntsCallbackIterator-4                      781           1529502 ns/op
-BenchmarkDataCallbackIterator-4                      678           1689796 ns/op
-BenchmarkIntsChannelIterator-4                         7         174408324 ns/op
-BenchmarkDataChannelIterator-4                         6         169017611 ns/op
-BenchmarkIntsBufferedChannelIterator-4                22          54457515 ns/op
-BenchmarkDataBufferedChannelIterator-4                22          53085977 ns/op
-BenchmarkIntsClosureIterator-4                       582           2057531 ns/op
-BenchmarkDataClosureIterator-4                       483           2466948 ns/op
-BenchmarkIntStatefulIterator-4                       870           1351186 ns/op
-BenchmarkDataStatefulIterator-4                      674           1814788 ns/op
-BenchmarkIntStatefulIteratorInterface-4              468           2518338 ns/op
-BenchmarkDataStatefulIteratorInterface-4             342           3512174 ns/op
+cpu: Apple M2 Max
+BenchmarkIntsCallbackIterator
+BenchmarkIntsCallbackIterator-12             	    3093	    347019 ns/op
+BenchmarkDataCallbackIterator
+BenchmarkDataCallbackIterator-12             	    2554	    469291 ns/op
+BenchmarkIntsBuiltinPushIterator
+BenchmarkIntsBuiltinPushIterator-12          	     616	   1919919 ns/op
+BenchmarkDataBuiltinPushIterator
+BenchmarkDataBuiltinPushIterator-12          	    1976	    600099 ns/op
+BenchmarkIntsBuiltinPullIterator
+BenchmarkIntsBuiltinPullIterator-12          	      27	  42105520 ns/op
+BenchmarkDataBuiltinPullIterator
+BenchmarkDataBuiltinPullIterator-12          	      27	  42632287 ns/op
+BenchmarkIntsBuiltinPullManualIterator
+BenchmarkIntsBuiltinPullManualIterator-12    	     618	   1922295 ns/op
+BenchmarkDataBuiltinPullManualIterator
+BenchmarkDataBuiltinPullManualIterator-12    	     603	   1963053 ns/op
+BenchmarkIntsChannelIterator
+BenchmarkIntsChannelIterator-12              	       8	 138480906 ns/op
+BenchmarkDataChannelIterator
+BenchmarkDataChannelIterator-12              	       8	 139482448 ns/op
+BenchmarkIntsBufferedChannelIterator
+BenchmarkIntsBufferedChannelIterator-12      	      25	  46171112 ns/op
+BenchmarkDataBufferedChannelIterator
+BenchmarkDataBufferedChannelIterator-12      	      25	  45705008 ns/op
+BenchmarkIntsClosureIterator
+BenchmarkIntsClosureIterator-12              	     619	   1922210 ns/op
+BenchmarkDataClosureIterator
+BenchmarkDataClosureIterator-12              	     580	   2046098 ns/op
+BenchmarkIntStatefulIterator
+BenchmarkIntStatefulIterator-12              	     586	   2039062 ns/op
+BenchmarkDataStatefulIterator
+BenchmarkDataStatefulIterator-12             	     616	   1933832 ns/op
+BenchmarkIntStatefulIteratorInterface
+BenchmarkIntStatefulIteratorInterface-12     	     589	   2048435 ns/op
+BenchmarkDataStatefulIteratorInterface
+BenchmarkDataStatefulIteratorInterface-12    	     612	   1925972 ns/op
 PASS
-ok      github.com/ewencp/golang-iterators-benchmark    17.764s
+ok  	github.com/ewencp/golang-iterators-benchmark	24.387s
+
+
+Explanation of iterator types:
+
+CallbackIterator: A callback function is passed in which is invoked once for each element.
+BuiltinPushIterator: Uses the 1.23+ iter.Seq function type to use natural-looking for-range loops.
+BuiltinPullIterator: Uses the 1.23+ iter.Pull wrapper of the BuiltinPushIterator to do pull-based iteration.
+BuiltinPullManualIterator: Implements the pull-based iteration manually, avoiding channels overhead of the iter.Pull wrapper version.
+ChannelIterator: Returns a channel as the iterator, using a background goroutine to "generate" the values, allowing for natural looking for-range loop.
+BufferedChannelIterator: Same as ChannelIterator but with channeled buffer of 50 elements.
+ClosureIterator: Externally, the user gets a function to call which raturns (element, has_next), and should only proceed if has_next is true. Actual iteration is more complex requiring 3-clause for loop or an extra conditional inside the loop body because of this additional check. Closure refers to the internal implementation.
+StatefulIterator: Returns an iterator struct, requiring the user to store the variable and perform Next() and Value() method calls to iterate over elements.
+StatefulIteratorInterface: Same as StatefulIterator but the returned type is an interface rather than a specific struct type.
+
+Note that the Builtin* iterators are actually doing more than the rest since they allow stopping iteration.
